@@ -682,6 +682,8 @@ class Mover:
       point = pointOnCircleByAngleAndLength(angle, distance, current_point)
       line_points_vals = createLineIteratorWithValues(current_point, point, self.poe_bot.game_data.terrain.passable)
       length = 0
+      if len(line_points_vals) == 0: # fix index out of bound
+        continue
       last_point = line_points_vals[0]
       for point in line_points_vals:
         if point[2] != 1:

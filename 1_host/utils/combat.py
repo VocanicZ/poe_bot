@@ -302,7 +302,7 @@ class AutoFlasks:
         continue
 
       # else tap on flask
-      print(f"[AutoFlasks] using utility flask {flask.name} {flask.index} at {time.time()}")
+      #print(f"[AutoFlasks] using utility flask {flask.name} {flask.index} at {time.time()}")
       self.useFlask(flask.index)
       # if tapped, return, so it wont look like a flask macro
       return True
@@ -316,7 +316,7 @@ class AutoFlasks:
       health_component = poe_bot.game_data.player.life.energy_shield
     else:
       health_component = poe_bot.game_data.player.life.health
-    print(f"[AutoFlasks.useLifeFlask] {health_component.getPercentage()} {self.hp_thresh}")
+    #print(f"[AutoFlasks.useLifeFlask] {health_component.getPercentage()} {self.hp_thresh}")
     # life flask
     if self.pathfinder is True:
       # print(f'lifeflask pf')

@@ -1047,7 +1047,7 @@ class Camera(PoeBotComponent):
       if self.failure_count == self.max_failures:
         raise ValueError(f"[Camera.update] failed to updated matrix for {self.max_failures} attempts in row")
     else:
-      print(f"[Camera.update] updating camera matrix with {matrix_data}")
+      #print(f"[Camera.update] updating camera matrix with {matrix_data}")
       self.matrix = np.array(matrix_data, dtype=np.float32).reshape(4, 4)
       self.failure_count = 0
 

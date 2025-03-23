@@ -45,12 +45,12 @@ class LootPicker:
     self.last_picking_item_icon_render = ""
     self.attempting_to_pick_last_item_for_iterations = 0
 
-  def collectLoot(self, *args):
+  def collectLoot(self, combat=True, max_distance=-1,*args):
     """
     True - if picked smth
     False - no items to pick
     """
-    print(f"[LootPicker.collectLoot] call at {time.time()}")
+    #print(f"[LootPicker.collectLoot] call at {time.time()}")
     poe_bot = self.poe_bot
     pickable_items = poe_bot.loot_picker.loot_filter.getPickableItems()
     if len(pickable_items) == 0:
@@ -73,9 +73,13 @@ class LootPicker:
       print(f"self.attempting_to_pick_last_item_for_iterations > 10, adding to ignore list: {str(pickable_item)}")
       poe_bot.loot_picker.loot_filter.item_id_to_ignore.append(pickable_item.id)
     print(f"[LootPicker.collectLoot] collectLootAt near {pickable_item} at {time.time()}")
+    if max_distance != -1 and pickable_item.distanceToPlayer() > max_distance:
+      print(f"[LootPicker.collectLoot] loot too far {pickable_item}")
+      return False
     point_to_run_around = {"X": pickable_item.grid_position.x, "Y": pickable_item.grid_position.y}
-    print(f"[LootPicker.collectLoot] going to clear nearby {pickable_item}")
-    poe_bot.combat_module.clearLocationAroundPoint(point_to_run_around)
+    if combat:
+      print(f"[LootPicker.collectLoot] going to clear nearby {pickable_item}")
+      poe_bot.combat_module.clearLocationAroundPoint(point_to_run_around)
     print(f"[LootPicker.collectLoot] going to collect loot near {pickable_item}")
     poe_bot.last_action_time = 0
     # print(f'#collectLoot d at {time.time()}')
@@ -84,13 +88,21 @@ class LootPicker:
       > 19
     ):
       print("going closer to loot")
-      self.poe_bot.mover.goToPoint(
-        point=(pickable_item.grid_position.x, pickable_item.grid_position.y),
-        custom_continue_function=poe_bot.combat_module.build.usualRoutine,
-        release_mouse_on_end=True,
-        min_distance=20,
-        step_size=random.randint(30, 35),
-      )
+      if combat:
+        self.poe_bot.mover.goToPoint(
+          point=(pickable_item.grid_position.x, pickable_item.grid_position.y),
+          custom_continue_function=poe_bot.combat_module.build.usualRoutine,
+          release_mouse_on_end=True,
+          min_distance=20,
+          step_size=random.randint(30, 35),
+        )
+      else:
+        self.poe_bot.mover.goToPoint(
+          point=(pickable_item.grid_position.x, pickable_item.grid_position.y),
+          release_mouse_on_end=True,
+          min_distance=20,
+          step_size=random.randint(30, 35),
+        )
     else:
       self.poe_bot.mover.stopMoving()
       print("already close enough to loot")
@@ -103,7 +115,8 @@ class LootPicker:
     self.pickupDropV7(pickable_items_sorted)
     poe_bot.refreshInstanceData(reset_timer=True)
     poe_bot.last_action_time = 0
-    poe_bot.combat_module.build.staticDefence()
+    if combat:
+      poe_bot.combat_module.build.staticDefence()
     print(f"[LootPicker.collectLoot] return at {time.time()}")
     return True
 
