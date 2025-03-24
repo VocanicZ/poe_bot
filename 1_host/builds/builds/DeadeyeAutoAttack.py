@@ -5,10 +5,8 @@ import numpy as np
 
 import sys
 sys.path.append("...")
-if TYPE_CHECKING:
-  from utils.combat import ButtonHolder
-from utils.skill import SKILL_KEYS_WASD
-from utils.utils import createLineIteratorWithValues
+from utils.skill import SKILL_KEYS_WASD, Skill
+from utils.utils import createLineIteratorWithValues, getAngle
 
 class Build(Build):
   def __init__(self, poe_bot: "PoeBot"):
@@ -19,34 +17,23 @@ class Build(Build):
     attack_button = None
     print("looking for Bow Shot button on keyboard")
     for i in range(3, 8):
-      if self.poe_bot.game_data.skills.internal_names[i] == "bow_shot":
+      print(self.poe_bot.game_data.skills.internal_names[i])
+      if self.poe_bot.game_data.skills.internal_names[i] == "player_melee_bow":
         attack_button = SKILL_KEYS_WASD[i]
         print(f"Bow Shot button is {attack_button}")
         break
     if attack_button is None:
       poe_bot.raiseLongSleepException("set to wasd, press it on qwert")
-    self.attack_button_holder: "ButtonHolder" = ButtonHolder(self.poe_bot, attack_button, max_hold_duration=0.33)
-    text = "###README### \nButtonHolder class has an issue, it basically sends the hold action to the machine, but not checks if it's registered in poe. if in somehow your poe window will lag and wont register the hold action, itll think that its holding it, there was an issue when i was testing cwdt. i was managed to deal with it by checking the history of poe_bot.game_data.skills.total_uses[self.build.barrier_invocation.skill_index], so if the value isnt changed for several cycles, it means that the button isnt holding"
-    for z in range(10):
-      print(text)
-    # override mover.stopMoving, so itll release tempest flurry as well
-    attack_button_holder = self.attack_button_holder
+    self.attacking_skill = Skill(poe_bot=poe_bot, skill_index=self.poe_bot.game_data.skills.internal_names.index("player_melee_bow"))
 
-    def customStopMoving(self):
-      q = [lambda: self.__class__.stopMoving(self), lambda: attack_button_holder.forceStopPress()]
-      random.shuffle(q)
-      while len(q) != 0:
-        action = q.pop()
-        action()
-
-    self.poe_bot.mover.stopMoving = customStopMoving.__get__(self.poe_bot.mover)
-
+  """
   def usualRoutine(self, mover: Mover):
     poe_bot = self.poe_bot
     self.useFlasks()
     hold_attack = False
     nearby_enemy = next((e for e in poe_bot.game_data.entities.attackable_entities if e.isInRoi() and e.isInLineOfSight()), None)
     while True:
+      print(f"nearby enemy {nearby_enemy}")
       if nearby_enemy:
         hold_attack = True
         break
@@ -73,6 +60,54 @@ class Build(Build):
         return True
       break
 
+    return False
+  """
+  def usualRoutine(self, mover: Mover = None):
+    poe_bot = self.poe_bot
+    if ("Hideout" in poe_bot.game_data.area_raw_name):
+      return False
+    self.auto_flasks.useFlasks()
+    # if we are moving
+    if mover is not None:
+      self.useBuffs()
+      min_hold_duration = random.randint(25, 55) / 100
+
+      nearby_enemies = list(filter(lambda e: e.isInRoi() and e.distance_to_player < 300, poe_bot.game_data.entities.attackable_entities))
+      #print(f"nearby_enemies: {nearby_enemies}")
+
+      entities_to_hold_skill_on: list[Entity] = []
+      if nearby_enemies:
+        for _ in range(1):
+          nearby_visible_enemies = list(filter(lambda e: e.isInLineOfSight(), nearby_enemies))
+          if not nearby_visible_enemies:
+            break
+          entities_to_hold_skill_on = sorted(nearby_visible_enemies, key=lambda e: e.distance_to_player)
+          min_hold_duration = 0.1
+          break
+      if entities_to_hold_skill_on:
+        entities_to_hold_skill_on_ids = list(map(lambda e: e.id, entities_to_hold_skill_on))
+        hold_start_time = time.time()
+        self.attacking_skill.press()
+        entities_to_hold_skill_on[0].hover()
+        print(f"self.attacking_skill.getCastTime() {self.attacking_skill.getCastTime()}")
+        hold_duration = self.attacking_skill.getCastTime() * random.randint(25, 35) / 10
+        # hold_duration = random.randint(int(self.attacking_skill.getCastTime() * 120), int(self.attacking_skill.getCastTime() * 160))/100
+        print(f"hold_duration {hold_duration}")
+        while time.time() - hold_duration < hold_start_time:
+          poe_bot.refreshInstanceData()
+          self.auto_flasks.useFlasks()
+          entity_to_kill = next((e for e in poe_bot.game_data.entities.attackable_entities if e.id in entities_to_hold_skill_on_ids), None)
+          if entity_to_kill:
+            entity_to_kill.hover()
+          else:
+            if not time.time() + 0.1 > hold_start_time + min_hold_duration:
+              time.sleep(0.1)
+            break
+        self.attacking_skill.release()
+        return True
+    # if we are staying and waiting for smth
+    else:
+      self.staticDefence()
     return False
 
   def killUsual(self, entity, is_strong=False, max_kill_time_sec=10, *args, **kwargs):

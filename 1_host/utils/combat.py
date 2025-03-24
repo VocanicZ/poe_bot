@@ -27,6 +27,7 @@ class CombatModule:
     self.poe_bot = poe_bot
     if build:
       self.build = getBuild(build)(poe_bot)
+      print(f"assigned build {build}")
     else:
       print("build is not assigned, using any functions may throw errors")
     self.entities_to_ignore_path_keys: List[str] = []

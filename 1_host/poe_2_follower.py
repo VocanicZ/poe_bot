@@ -10,6 +10,7 @@ from utils.poebot import Poe2Bot
 from utils.components import Posx1x2y1y2, UiElement
 from utils.utils import sortByHSV
 from utils.loot_filter import PickableItemLabel
+from utils.combat import CombatModule
 
 poe_bot_class = Poe2Bot
 poe_bot: poe_bot_class
@@ -17,6 +18,7 @@ poe_bot: poe_bot_class
 default_config = {
   "REMOTE_IP": "127.0.0.1",
   "UNIQUE_ID": "follower",
+  "BUILD": "deadeye_auto_attack",
   "force_reset_temp": False,
 }
 
@@ -40,6 +42,7 @@ print(f"config to run {config}")
 
 UNIQUE_ID = config["UNIQUE_ID"]
 REMOTE_IP = config["REMOTE_IP"]
+BUILD = config["BUILD"]
 force_reset_temp = config["force_reset_temp"]
 print(f"running follower using: REMOTE_IP: {REMOTE_IP} force_reset_temp: {force_reset_temp}")
 
@@ -90,6 +93,8 @@ def get_map_device_pos(poe_bot):
 
 poe_bot = Poe2Bot(unique_id=UNIQUE_ID,remote_ip=REMOTE_IP)
 poe_bot.refreshAll()
+poe_bot.combat_module = CombatModule(poe_bot, BUILD)
+poe_bot.mover.default_continue_function = poe_bot.combat_module.build.usualRoutine
 poe_bot.game_data.terrain.getCurrentlyPassableArea()
 
 auto_flasks = AutoFlasks(poe_bot)
@@ -194,7 +199,7 @@ while True:
   else:
     poe_bot.refreshInstanceData()
 
-  useFlasksOutsideOfHideout()
+  poe_bot.combat_module.build.usualRoutine(poe_bot.mover)
   #poe_bot.loot_picker.collectLoot(combat=False, max_distance=100)
 
   id_to_follow = poe_bot.backend.getEntityIdByPlayerName(ign_to_follow)
@@ -212,7 +217,7 @@ while True:
     else:
       poe_bot.mover.stopMoving()
     
-      if ("Hideout" in poe_bot.game_data.area_raw_name):
+      if ("Hideout" in poe_bot.game_data.area_raw_name) and afk:
         map_device = get_map_device(poe_bot)
         if map_device is not None:
           if map_device.distance_to_player <= min_distance_to_follow * 2:

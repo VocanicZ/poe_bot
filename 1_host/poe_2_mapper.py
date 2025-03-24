@@ -11,7 +11,8 @@ from ast import literal_eval
 from math import dist
 from typing import List, Type
 
-from utils.gamehelper import Entity, Poe2Bot
+from utils.poebot import Poe2Bot
+from utils.entity import Entity
 
 
 # In[ ]:
