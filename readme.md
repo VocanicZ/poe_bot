@@ -1,4 +1,5 @@
 ## about
+- these are folks from [poe_bot](https://github.com/tachikoma-av/poe_bot)
 - these are leftovers from poe1 adapted to run for poe2. Basically, smth what was used to bot maps in poe1
 
 ## goals
@@ -20,10 +21,8 @@
 <!-- - migrate and adapt Mapper class from 1_host/maps.py for poe2 mapper -->
 
 
-## contacts
-- telegram: @shmeshhlai
+## credits
 - discord: k1dnap.1234
-- discord channel: https://discord.gg/dSxeN24YPr (but im not a good moderator, maybe it needs to be set up properly)
 
 ## other reamdes
 - [installation_and_usage](readmes/installation_and_usage.md)
