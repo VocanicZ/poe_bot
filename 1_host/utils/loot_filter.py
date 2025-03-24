@@ -4,7 +4,7 @@ import typing
 from typing import List
 
 if typing.TYPE_CHECKING:
-  from .gamehelper import PoeBot
+  from .poebot import PoeBot
 
 import random
 import time

@@ -1,6 +1,8 @@
 from ..build import *
 
-from ...utils.combat import DodgeRoll
+import sys
+sys.path.append('...')
+from utils.skill import DodgeRoll
 
 class Build(Build):
   def __init__(self, poe_bot:PoeBot):

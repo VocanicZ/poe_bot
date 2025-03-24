@@ -1,7 +1,9 @@
 from ..build import *
 
-from ...utils.combat import SkillWithDelay, NON_INSTANT_MOVEMENT_SKILLS, MovementSkill
-from ...utils.utils import getAngle
+import sys
+sys.path.append("...")
+from utils.utils import getAngle
+from utils.skill import SkillWithDelay, MovementSkill, NON_INSTANT_MOVEMENT_SKILLS
 
 GENERIC_BUILD_ATTACKING_SKILLS = [
   "spark",

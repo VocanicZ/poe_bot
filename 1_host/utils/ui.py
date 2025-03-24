@@ -3,7 +3,7 @@ from __future__ import annotations
 import typing
 
 if typing.TYPE_CHECKING:
-  from .gamehelper import Poe2Bot, PoeBot
+  from .poebot import Poe2Bot, PoeBot
 
 import random
 import time

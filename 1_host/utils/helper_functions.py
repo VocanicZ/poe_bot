@@ -6,17 +6,15 @@ import typing
 from typing import List
 
 if typing.TYPE_CHECKING:
-  from .gamehelper import Entity, PoeBot
+  from .poebot import PoeBot
   from .ui import InventoryItem
 
 import random
 import time
-from math import dist
 
 import numpy as np
 
 from .utils import getFourPoints
-
 
 class HelperFunctions:
   def __init__(self, poe_bot: PoeBot) -> None:

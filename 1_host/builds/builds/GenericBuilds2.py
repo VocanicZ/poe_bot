@@ -1,6 +1,8 @@
 from ..build import *
 
-from ...utils.combat import SkillWithDelay, DodgeRoll
+import sys
+sys.path.append("...")
+from utils.skill import SkillWithDelay, DodgeRoll
 
 GENERIC_BUILD_ATTACKING_SKILLS = [
   "spark",

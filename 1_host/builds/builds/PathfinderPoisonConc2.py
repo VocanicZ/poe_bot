@@ -1,6 +1,9 @@
 from ..build import *
 
-from ...utils.combat import SkillWithDelay, DodgeRoll
+import sys
+sys.path.append('...')
+from utils.skill import SkillWithDelay, DodgeRoll
+from utils.poebot import Poe2Bot
 
 class Build(Build):
   """ """

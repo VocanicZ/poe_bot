@@ -1,5 +1,8 @@
 """constants"""
 
+CURRENT_LEAGUE = "Necropolis"
+IS_LOADING_KEY = "IsLoading_b"
+
 # shitty uniques
 unidentified_keywords = ["Unidentified"]
 

@@ -1,12 +1,11 @@
 from __future__ import annotations
 
 import typing
-
-if typing.TYPE_CHECKING:
-  from .gamehelper import PoeBot
 import random
 import time
 
+if typing.TYPE_CHECKING:
+  from .poebot import PoeBot
 
 class PosXY:
   x: int

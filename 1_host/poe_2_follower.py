@@ -1,15 +1,16 @@
 import random
 import sys
 import time
+import math
 from ast import literal_eval
 
-from utils.combat import AutoFlasks
-from utils.gamehelper import Entity, Poe2Bot
+from utils.autoflask import AutoFlasks
+from utils.entity import Entity
+from utils.poebot import Poe2Bot
 from utils.components import Posx1x2y1y2, UiElement
 from utils.utils import sortByHSV
-import math
+
 from utils.loot_filter import PickableItemLabel
-from utils.combat import GenericBuild2
 
 poe_bot_class = Poe2Bot
 poe_bot: poe_bot_class
@@ -254,4 +255,3 @@ while True:
     print("Afk")
   else:
      afk_counter -= 1
-raise 404

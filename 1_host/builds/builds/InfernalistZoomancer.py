@@ -1,7 +1,9 @@
 from ..build import *
 
-from ...utils.combat import SkillWithDelay, DodgeRoll
-from ...utils.utils import getAngle
+import sys
+sys.path.append('...')
+from utils.skill import SkillWithDelay, DodgeRoll
+from utils.utils import getAngle
 
 class Build(Build):
   """ """

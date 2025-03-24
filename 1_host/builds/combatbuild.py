@@ -1,6 +1,6 @@
-from build import Build
+from .build import Build
 
-from .builds import GenericBuilds, GenericBuilds2, InfernalistMinion, TempestFlurry, TemporalisBlinker, BarrierInvocationInfernalist, InfernalistZoomancer, PathfinderPoisonConc2
+from .builds import GenericBuilds, GenericBuilds2, InfernalistMinion, TempestFlurry, TemporalisBlinker, BarrierInvocationInfernalist, InfernalistZoomancer, PathfinderPoisonConc2, DeadeyeAutoAttack
 
 COMBAT_BUILDS = {
   "generic_hitter": GenericBuilds.GenericHitter,
@@ -16,6 +16,7 @@ COMBAT_BUILDS = {
   "infernalist_minion": InfernalistMinion,
   "infernalist_zoomancer": InfernalistZoomancer,
   "pathfinder_poison_con_2": PathfinderPoisonConc2,
+  "deadeye_auto_attack": DeadeyeAutoAttack
 }
 
 COMBAT_BUILDS_LIST = list(COMBAT_BUILDS.keys())

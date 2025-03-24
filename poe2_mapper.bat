@@ -2,8 +2,8 @@ cd 1_host
 
 set debug=0
 set unique_id=test
-set build_name=DeadEyeAutoAttack
 set /p "remote_ip=Remote ip: "
+set /p "build_name=Build id: "
 
 TITLE %remote_ip% %unique_id% %predefined_strategy% %build_name%
 call venv\Scripts\activate

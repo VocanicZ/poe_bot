@@ -3,9 +3,13 @@ from ..build import *
 import time
 from math import dist
 import numpy as np
+import _thread
 
-from ...utils import createLineIteratorWithValues
-from ...utils.combat import SkillWithDelay, SKILL_KEYS_WASD, DodgeRoll
+import sys
+sys.path.append("...")
+from utils.utils import createLineIteratorWithValues
+from utils.skill import SkillWithDelay, SKILL_KEYS_WASD, DodgeRoll
+from utils.poebot import Poe2Bot
 
 class Build(Build):
   def __init__(self, poe_bot:PoeBot):
@@ -156,7 +160,7 @@ class Build(Build):
         break
     return True
   
-    def generateStacks(self, stacks_count=60):
+  def generateStacks(self, stacks_count=60):
     poe_bot = self.poe_bot
     demon_stacks = poe_bot.combat_module.build.getDemonFormStacks()
     while demon_stacks < stacks_count:

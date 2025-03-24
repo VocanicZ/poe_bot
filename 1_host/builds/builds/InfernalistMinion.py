@@ -3,8 +3,10 @@ from ..build import *
 import time
 from math import dist
 
-from ...utils.utils import getAngle
-from ...utils.combat import SkillWithDelay, DodgeRoll
+import sys
+sys.path.append('...')
+from utils.utils import getAngle
+from utils.skill import SkillWithDelay, DodgeRoll
 
 class Build(Build):
   """ """

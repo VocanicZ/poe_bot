@@ -7,7 +7,7 @@ import time
 import typing
 
 if typing.TYPE_CHECKING:
-  from .gamehelper import PoeBot
+  from .poebot import PoeBot
 
 
 class Backend:

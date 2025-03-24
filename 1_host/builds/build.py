@@ -1,17 +1,21 @@
-import typing
-
-if typing.TYPE_CHECKING:
-  from ..utils.gamehelper import Entity, Poe2Bot, PoeBot
-  from ..utils.mover import Mover
-
 from typing import List
 from math import dist
 import random
 import time
 
-from ..utils import extendLine
-from ..utils.combat import AutoFlasks, Skill
-from ..utils.constants import DANGER_ZONE_KEYS
+import sys
+sys.path.append("..")
+from utils.utils import extendLine
+#from utils import combat, gamehelper
+from utils import skill, poebot, autoflask, entity
+from utils.constants import DANGER_ZONE_KEYS
+from utils.mover import Mover
+
+PoeBot = poebot.PoeBot
+Skill = skill.Skill
+AutoFlasks = autoflask.AutoFlasks
+Entity = entity.Entity
+
 
 class Build:
   poe_bot: PoeBot
