@@ -4,13 +4,11 @@ import time
 from math import dist
 from typing import List
 
-import poebot
-import entity
+from .poebot import PoeBot
+from .entity import Entity
 from .constants import SKILL_KEYS_WASD, SKILL_KEYS, AURAS_SKILLS_TO_BUFFS
 from .utils import extendLine
 
-PoeBot = poebot.PoeBot
-Entity = entity.Entity
 
 NON_INSTANT_MOVEMENT_SKILLS = ["shield_charge", "whirling_blades"]
 

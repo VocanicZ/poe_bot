@@ -1,4 +1,4 @@
-from utils.gamehelper import Poe2Bot
+from utils.poebot import Poe2Bot
 import time
 from utils.loot_filter import PickableItemLabel
 
