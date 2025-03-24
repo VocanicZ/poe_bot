@@ -1,9 +1,9 @@
-import poebot
-
-PoeBot = poebot.PoeBot
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+  from .poebot import PoeBot
 
 class QuestFlags:
-  def __init__(self, poe_bot: PoeBot) -> None:
+  def __init__(self, poe_bot: "PoeBot") -> None:
     self.poe_bot = poe_bot
     self.quest_flags_raw: dict = None
 

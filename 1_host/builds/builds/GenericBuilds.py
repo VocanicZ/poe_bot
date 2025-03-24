@@ -19,9 +19,7 @@ class GenericHitter(Build):
   venom gyre
   """
 
-  poe_bot: PoeBot
-
-  def __init__(self, poe_bot: PoeBot) -> None:
+  def __init__(self, poe_bot: "PoeBot") -> None:
     self.poe_bot = poe_bot
 
     self.attacking_skill = None
@@ -252,10 +250,8 @@ class GenericHitter(Build):
 
 class GenericSummoner(Build):
   spectre_list = []
-  poe_bot: PoeBot
-  poe_bot: PoeBot
 
-  def __init__(self, poe_bot: PoeBot) -> None:
+  def __init__(self, poe_bot: "PoeBot") -> None:
     self.poe_bot = poe_bot
     super().__init__(poe_bot)
 

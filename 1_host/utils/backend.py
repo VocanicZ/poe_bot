@@ -11,7 +11,7 @@ if typing.TYPE_CHECKING:
 
 
 class Backend:
-  def __init__(self, poe_bot: PoeBot, port: int = 50006) -> None:
+  def __init__(self, poe_bot: "PoeBot", port: int = 50006) -> None:
     self.poe_bot = poe_bot
     self.port = port
     self.host = poe_bot.remote_ip
@@ -231,7 +231,7 @@ class Backend:
 
 
 class ExCore2Sockets(Backend):
-  def __init__(self, poe_bot: PoeBot, port: int = 50006):
+  def __init__(self, poe_bot: "PoeBot", port: int = 50006):
     super().__init__(poe_bot, port)
     self.sending = False
     self.connected = False

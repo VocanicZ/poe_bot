@@ -9,10 +9,11 @@ import sys
 sys.path.append("...")
 from utils.utils import createLineIteratorWithValues
 from utils.skill import SkillWithDelay, SKILL_KEYS_WASD, DodgeRoll
-from utils.poebot import Poe2Bot
+if TYPE_CHECKING:
+  from utils.poebot import Poe2Bot
 
 class Build(Build):
-  def __init__(self, poe_bot:PoeBot):
+  def __init__(self, poe_bot:"PoeBot"):
     super().__init__(poe_bot)
     self.auto_flasks.life_flask_recovers_es = True
     self.auto_flasks.hp_thresh = 0.75
@@ -186,7 +187,7 @@ class Build(Build):
     return "demon_form_spell_gem_buff" in self.poe_bot.game_data.player.buffs
 
 class LoopController:
-  def __init__(self, poe_bot: Poe2Bot, build):
+  def __init__(self, poe_bot: "Poe2Bot", build):
     self.poe_bot = poe_bot
     self.running = False
 

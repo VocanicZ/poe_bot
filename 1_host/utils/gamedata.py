@@ -1,12 +1,13 @@
 from math import dist
-from typing import List
+from typing import List, TYPE_CHECKING
 import time
 
-from .poebot import PoeBot
+if TYPE_CHECKING:
+  from .poebot import PoeBot
 from .terrain import Terrain
 from .entity import Entity, Entities
 from .player import Player
-from flask import Flask
+from .flask import Flask
 from .quest import QuestFlags
 from .skill import Skills
 from .gamehelper import Camera
@@ -15,7 +16,6 @@ from .components import PosXY, Life
 from .constants import IS_LOADING_KEY, FLASK_NAME_TO_BUFF
 
 class GameData:
-  poe_bot: PoeBot
   game_state: int
   is_loading: bool
   invites_panel_visible: bool
@@ -30,7 +30,7 @@ class GameData:
   player_life: Life
   last_update_time = 0.0
 
-  def __init__(self, poe_bot: PoeBot) -> None:
+  def __init__(self, poe_bot: "PoeBot") -> None:
     self.poe_bot = poe_bot
     self.terrain = Terrain(self.poe_bot)
     self.entities = Entities(self.poe_bot)

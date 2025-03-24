@@ -3,14 +3,12 @@ from ..build import *
 import sys
 sys.path.append('...')
 from utils.skill import SkillWithDelay, DodgeRoll
-from utils.poebot import Poe2Bot
+if TYPE_CHECKING:
+  from utils.poebot import Poe2Bot
 
 class Build(Build):
   """ """
-
-  poe_bot: Poe2Bot
-
-  def __init__(self, poe_bot: Poe2Bot) -> None:
+  def __init__(self, poe_bot: "Poe2Bot") -> None:
     self.poe_bot = poe_bot
 
     self.last_explosion_loc = [0, 1, 0, 1]

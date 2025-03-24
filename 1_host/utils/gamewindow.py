@@ -1,15 +1,13 @@
-from typing import List
+from typing import List, TYPE_CHECKING
 
-import poebot
+if TYPE_CHECKING:
+  from .poebot import PoeBot
 from .utils import cropLine
-
-PoeBot = poebot.PoeBot
 
 class GameWindow:
   """
   about the game window itself
   """
-  poe_bot: PoeBot
   debug: bool
   raw: dict = {}
   pos_x = 0
@@ -18,7 +16,7 @@ class GameWindow:
   height = 0
   center_point = [0, 0]  # [x,y]
 
-  def __init__(self, poe_bot: PoeBot) -> None:
+  def __init__(self, poe_bot: "PoeBot") -> None:
     self.poe_bot = poe_bot
     self.debug = poe_bot.debug
 

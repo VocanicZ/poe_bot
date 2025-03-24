@@ -7,10 +7,7 @@ from utils.utils import getAngle
 
 class Build(Build):
   """ """
-
-  poe_bot: PoeBot
-
-  def __init__(self, poe_bot: PoeBot, can_kite=True) -> None:
+  def __init__(self, poe_bot: "PoeBot", can_kite=True) -> None:
     self.poe_bot = poe_bot
     self.can_kite = can_kite
     self.max_srs_count = 10

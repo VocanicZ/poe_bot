@@ -9,7 +9,6 @@ from utils.entity import Entity
 from utils.poebot import Poe2Bot
 from utils.components import Posx1x2y1y2, UiElement
 from utils.utils import sortByHSV
-
 from utils.loot_filter import PickableItemLabel
 
 poe_bot_class = Poe2Bot

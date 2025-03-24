@@ -11,9 +11,7 @@ from utils.skill import SkillWithDelay, DodgeRoll
 class Build(Build):
   """ """
 
-  poe_bot: PoeBot
-
-  def __init__(self, poe_bot: PoeBot) -> None:
+  def __init__(self, poe_bot: "PoeBot") -> None:
     self.poe_bot = poe_bot
 
     # raging spririts count
@@ -69,7 +67,7 @@ class Build(Build):
     print(f"unearth_index {unearth_index}")
     self.unearth = None
     if unearth_index is not False:
-      self.unearth = combat.SkillWithDelay(
+      self.unearth = SkillWithDelay(
         poe_bot=poe_bot,
         skill_index=unearth_index,
         min_delay=random.uniform(0.1, 0.2),

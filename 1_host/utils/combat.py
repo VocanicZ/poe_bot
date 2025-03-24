@@ -23,7 +23,7 @@ from builds.build import Build
 class CombatModule:
   build: Build
 
-  def __init__(self, poe_bot: PoeBot, build: str = None) -> None:
+  def __init__(self, poe_bot: "PoeBot", build: str = None) -> None:
     self.poe_bot = poe_bot
     if build:
       self.build = getBuild(build)(poe_bot)
@@ -234,7 +234,7 @@ class CombatModule:
     )
 
 class AuraManager:
-  def __init__(self, poe_bot: PoeBot) -> None:
+  def __init__(self, poe_bot: "PoeBot") -> None:
     self.poe_bot = poe_bot
     self.aura_skills = []
     self.blessing_skill: BlessingSkill = None
@@ -307,11 +307,11 @@ class AuraManager:
       self.blessing_skill.use()
 
 class CombatManager:
-  def __init__(self, poe_bot: PoeBot = None) -> None:
+  def __init__(self, poe_bot: "PoeBot" = None) -> None:
     pass
 
 class ButtonHolder:
-  def __init__(self, poe_bot: Poe2Bot, button: str, max_hold_duration=10.0, custom_break_function=lambda: False):
+  def __init__(self, poe_bot: "Poe2Bot", button: str, max_hold_duration=10.0, custom_break_function=lambda: False):
     self.poe_bot = poe_bot
     self.thread_finished = [False]
     self.can_hold_till = [0]

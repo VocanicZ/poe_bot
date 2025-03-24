@@ -2,20 +2,21 @@ import numpy as np
 import cv2
 from math import dist
 import time
+from typing import TYPE_CHECKING
 
-from .poebot import PoeBot
+if TYPE_CHECKING:
+  from .poebot import PoeBot
 from .components import PosXY
 from .utils import createLineIteratorWithValues, getFourPoints
 
 class Terrain:
-  poe_bot: PoeBot
   terrain_image: np.ndarray  # np array
   passable: np.ndarray  # nparray
   currently_passable_area: np.ndarray = None
   visited_passable_areas: np.ndarray
   visited_area: np.ndarray  # np array
 
-  def __init__(self, poe_bot: PoeBot) -> None:
+  def __init__(self, poe_bot: "PoeBot") -> None:
     self.poe_bot = poe_bot
 
   def markAsVisited(self, pos_x: int, pos_y: int, radius: int = None):

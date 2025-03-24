@@ -1,11 +1,12 @@
 import time
 import random
-
-from .poebot import PoeBot
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+  from .poebot import PoeBot
 from .constants import CONSTANTS, FLASK_NAME_TO_BUFF
 
 class AutoFlasks:
-  def __init__(self, poe_bot: PoeBot, hp_thresh=0.5, mana_thresh=0.5, pathfinder=False, life_flask_recovers_es=False) -> None:
+  def __init__(self, poe_bot: "PoeBot", hp_thresh=0.5, mana_thresh=0.5, pathfinder=False, life_flask_recovers_es=False) -> None:
     self.poe_bot = poe_bot
     self.hp_thresh = hp_thresh
     self.mana_thresh = mana_thresh

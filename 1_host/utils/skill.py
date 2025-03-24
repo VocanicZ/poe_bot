@@ -2,9 +2,10 @@ import random
 import time
 
 from math import dist
-from typing import List
+from typing import List, TYPE_CHECKING
 
-from .poebot import PoeBot
+if TYPE_CHECKING:
+  from .poebot import PoeBot
 from .entity import Entity
 from .constants import SKILL_KEYS_WASD, SKILL_KEYS, AURAS_SKILLS_TO_BUFFS
 from .utils import extendLine
@@ -18,7 +19,7 @@ INSTANT_MOVEMENT_SKILLS = ["frostblink", "flame_dash"]
 class Skill:
   def __init__(
     self,
-    poe_bot: PoeBot,
+    poe_bot: "PoeBot",
     skill_index: int,
     skill_name="_deprecated",
     display_name="unnamed_skill",
@@ -192,7 +193,7 @@ class Skill:
     return x, y
 
 class Skills:
-  def __init__(self, poe_bot: PoeBot) -> None:
+  def __init__(self, poe_bot: "PoeBot") -> None:
     self.poe_bot = poe_bot
     self.can_use_skills_indexes_raw = [1 for i in range(14)]
     self.cast_time = [0 for i in range(14)]
@@ -224,7 +225,7 @@ class Skills:
 class AreaSkill(Skill):
   def __init__(
     self,
-    poe_bot: PoeBot,
+    poe_bot: "PoeBot",
     skill_index: int,
     skill_name="tipo chtobi potom uzat skill po ego internal name",
     display_name="AreaSkill",
@@ -261,7 +262,7 @@ class AreaSkill(Skill):
 class SkillWithDelay(Skill):
   def __init__(
     self,
-    poe_bot: PoeBot,
+    poe_bot: "PoeBot",
     skill_index: int,
     skill_name="",
     display_name="SkillWithDelay",
@@ -305,7 +306,7 @@ class SkillWithDelay(Skill):
 class MinionSkillWithDelay(SkillWithDelay):
   def __init__(
     self,
-    poe_bot: PoeBot,
+    poe_bot: "PoeBot",
     skill_index: int,
     skill_name="",
     display_name="SkillWithDelay",
@@ -333,7 +334,7 @@ class MinionSkillWithDelay(SkillWithDelay):
 
 class MovementSkill(Skill):
   def __init__(
-    self, poe_bot: PoeBot, skill_index: int, skill_name="", display_name="MovementSkill", min_delay=random.randint(30, 40) / 10, can_extend_path=True
+    self, poe_bot: "PoeBot", skill_index: int, skill_name="", display_name="MovementSkill", min_delay=random.randint(30, 40) / 10, can_extend_path=True
   ) -> None:
     self.min_delay = min_delay
     self.last_use_time = 0
@@ -371,7 +372,7 @@ class MovementSkill(Skill):
 class MovementSkill_new(SkillWithDelay):
   def __init__(
     self,
-    poe_bot: PoeBot,
+    poe_bot: "PoeBot",
     skill_index: int,
     skill_name="",
     display_name="MovementSkill",
@@ -415,7 +416,7 @@ class MovementSkill_new(SkillWithDelay):
 class BlessingSkill(SkillWithDelay):
   def __init__(
     self,
-    poe_bot: PoeBot,
+    poe_bot: "PoeBot",
     skill_index: int,
     skill_name="tipo chtobi potom uzat skill po ego internal name",
     display_name="SkillWithDelay",
@@ -433,20 +434,20 @@ class BlessingSkill(SkillWithDelay):
     return super().use(pos_x, pos_y, updated_entity, wait_for_execution, force)
 
 class Aura(Skill):
-  def __init__(self, poe_bot: PoeBot, bind_key=None, use_function=None, use_delay=4, skill_type=1, name="unnamed_skill", mana_cost=0) -> None:
+  def __init__(self, poe_bot: "PoeBot", bind_key=None, use_function=None, use_delay=4, skill_type=1, name="unnamed_skill", mana_cost=0) -> None:
     super().__init__(poe_bot, bind_key, use_function, use_delay, skill_type, name, mana_cost)
 
 class MinionSkill(Skill):
-  def __init__(self, poe_bot: PoeBot, bind_key=None, use_function=None, use_delay=4, skill_type=1, name="unnamed_skill", mana_cost=0) -> None:
+  def __init__(self, poe_bot: "PoeBot", bind_key=None, use_function=None, use_delay=4, skill_type=1, name="unnamed_skill", mana_cost=0) -> None:
     super().__init__(poe_bot, bind_key, use_function, use_delay, skill_type, name, mana_cost)
 
 class AttackingSkill(Skill):
-  def __init__(self, poe_bot: PoeBot, bind_key=None, use_function=None, use_delay=4, skill_type=1, name="unnamed_skill", mana_cost=0) -> None:
+  def __init__(self, poe_bot: "PoeBot", bind_key=None, use_function=None, use_delay=4, skill_type=1, name="unnamed_skill", mana_cost=0) -> None:
     super().__init__(poe_bot, bind_key, use_function, use_delay, skill_type, name, mana_cost)
 
 # poe2
 class DodgeRoll(SkillWithDelay):
-  def __init__(self, poe_bot: PoeBot):
+  def __init__(self, poe_bot: "PoeBot"):
     super().__init__(
       poe_bot=poe_bot,
       skill_index=3,

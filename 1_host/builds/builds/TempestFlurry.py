@@ -5,12 +5,13 @@ import numpy as np
 
 import sys
 sys.path.append('...')
-from utils.combat import ButtonHolder
+if TYPE_CHECKING:
+  from utils.combat import ButtonHolder
 from utils.skill import SKILL_KEYS_WASD
 from utils.utils import createLineIteratorWithValues
 
 class Build(Build):
-  def __init__(self, poe_bot: PoeBot):
+  def __init__(self, poe_bot: "PoeBot"):
     super().__init__(poe_bot)
     self.tempest_flurry_travel_distance = 20  # adjust it
     # find tempest flurry
@@ -24,7 +25,7 @@ class Build(Build):
         break
     if flurry_button is None:
       poe_bot.raiseLongSleepException("set to wasd, press it on qwert")
-    self.tempest_flurry_button_holder: ButtonHolder = ButtonHolder(self.poe_bot, flurry_button, max_hold_duration=0.33)
+    self.tempest_flurry_button_holder: "ButtonHolder" = ButtonHolder(self.poe_bot, flurry_button, max_hold_duration=0.33)
     text = "###README### \nButtonHolder class has an issue, it basically sends the hold action to the machine, but not checks if it's registered in poe. if in somehow your poe window will lag and wont register the hold action, itll think that its holding it, there was an issue when i was testing cwdt. i was managed to deal with it by checking the history of poe_bot.game_data.skills.total_uses[self.build.barrier_invocation.skill_index], so if the value isnt changed for several cycles, it means that the button isnt holding"
     for z in range(10):
       print(text)

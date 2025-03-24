@@ -2,28 +2,26 @@ from typing import List
 from math import dist
 import random
 import time
+from typing import TYPE_CHECKING
 
 import sys
 sys.path.append("..")
 from utils.utils import extendLine
 #from utils import combat, gamehelper
-from utils import skill, poebot, autoflask, entity
+if TYPE_CHECKING:
+  from utils.poebot import PoeBot
+from utils.skill import Skill
+from utils.autoflask import AutoFlasks
+from utils.entity import Entity
 from utils.constants import DANGER_ZONE_KEYS
 from utils.mover import Mover
 
-PoeBot = poebot.PoeBot
-Skill = skill.Skill
-AutoFlasks = autoflask.AutoFlasks
-Entity = entity.Entity
-
-
 class Build:
-  poe_bot: PoeBot
   chaos_immune = False
   buff_skills: List[Skill] = []
   restricted_mods: List[str] = []
 
-  def __init__(self, poe_bot: PoeBot) -> None:
+  def __init__(self, poe_bot: "PoeBot") -> None:
     self.poe_bot = poe_bot
     self.mover = self.poe_bot.mover
     self.auto_flasks = AutoFlasks(poe_bot=poe_bot)

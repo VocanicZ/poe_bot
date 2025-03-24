@@ -1,11 +1,11 @@
-from typing import List
+from typing import List, TYPE_CHECKING
 
-from .poebot import PoeBot
+if TYPE_CHECKING:
+  from .poebot import PoeBot
 from .flask import Flask
 from .components import PosXY, Life
 
 class Player:
-  poe_bot: PoeBot
   life: Life
   grid_pos: PosXY
   buffs: List[str]
@@ -14,7 +14,7 @@ class Player:
   mana_flasks: List[Flask]
   utility_flasks: List[Flask]
 
-  def __init__(self, poe_bot: PoeBot) -> None:
+  def __init__(self, poe_bot: "PoeBot") -> None:
     self.poe_bot = poe_bot
 
   def update(self, refreshed_data):

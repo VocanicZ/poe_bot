@@ -1,9 +1,10 @@
 import time
 import random
-from typing import List
+from typing import List, TYPE_CHECKING
 from math import dist
 
-from .poebot import PoeBot
+if TYPE_CHECKING:
+  from .poebot import PoeBot
 from .animation import Animation
 from .components import PosXY, PosXYZ, Life
 from .utils import lineContainsCharacters
@@ -30,7 +31,7 @@ class Entity:
   animation:Animation
 
 
-  def __init__(self, poe_bot: PoeBot, raw_json: dict) -> None:
+  def __init__(self, poe_bot: "PoeBot", raw_json: dict) -> None:
     self.poe_bot = poe_bot
     self.raw = raw_json
     self._location_on_screen: PosXY = None
@@ -209,10 +210,10 @@ class Entity:
     return False
 
 class Entities:
-  poe_bot: PoeBot
+  poe_bot: "PoeBot"
   raw: dict
 
-  def __init__(self, poe_bot: PoeBot) -> None:
+  def __init__(self, poe_bot: "PoeBot") -> None:
     self.poe_bot = poe_bot
     self.reset()
 

@@ -13,7 +13,7 @@ GENERIC_BUILD_ATTACKING_SKILLS = [
 ]
 
 class GenericBuild2(Build):
-  def __init__(self, poe_bot):
+  def __init__(self, poe_bot: "PoeBot"):
     super().__init__(poe_bot)
     self.last_action_time = 0
     self.attacking_skill: SkillWithDelay = None  # smth like la or sparks
