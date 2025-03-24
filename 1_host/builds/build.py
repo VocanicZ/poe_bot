@@ -208,7 +208,7 @@ class Build:
     # actions to do before some strong fight, such as placing totems before the essence opened or whatever
     print("prepareToFight is not defined")
 
-  def canAttackEntity(self, entity_to_kill:Entity):
+  def canAttackEntity(self, entity_to_kill:Entity, min_distance=100):
     if not entity_to_kill:
       print('cannot find desired entity to kill')
       return False

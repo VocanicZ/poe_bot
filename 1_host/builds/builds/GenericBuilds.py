@@ -257,14 +257,14 @@ class GenericSummoner(Build):
     self.poe_bot = poe_bot
     super().__init__(poe_bot)
 
-class FacetankBuild(Build):
+class GenericFacetank(Build):
   """
   spams main skill till death
   """
 
   pass
 
-class HitAndRunBuild(Build):
+class GenericHitAndRun(Build):
   """
   some spam skills
   # attacks several times and runs away
@@ -272,7 +272,7 @@ class HitAndRunBuild(Build):
 
   pass
 
-class KiteAroundBuild(Build):
+class GenericKiteAround(Build):
   """
   totem, minions, brands
   """

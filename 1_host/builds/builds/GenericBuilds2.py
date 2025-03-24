@@ -1,3 +1,14 @@
+from ..build import *
+
+from ...utils.combat import SkillWithDelay, DodgeRoll
+
+GENERIC_BUILD_ATTACKING_SKILLS = [
+  "spark",
+  "lightning_arrow",
+  "tempest_flurry",
+  "storm_wave",
+  "quarterstaff_combo_attack",
+]
 
 class GenericBuild2(Build):
   def __init__(self, poe_bot):
