@@ -5,6 +5,9 @@ set debug=0
 set /p "remote_ip=Remote ip: "
 set /p "build_name=build name: "
 
+set remote_ip="127.0.0.1"
+set build_name="deadeye_auto_attack"
+
 TITLE %remote_ip% %predefined_strategy% %build_name%
 call venv\Scripts\activate
 

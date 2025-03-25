@@ -8,7 +8,7 @@ import random
 import sys
 import time
 from ast import literal_eval
-from math import dist
+from math import dist, cos, sin, radians
 from typing import List, Type
 
 from utils.poebot import Poe2Bot
@@ -189,6 +189,33 @@ class Mapper2(PoeBotComponent):
     self.sortWaystones(all_maps)
     return all_maps
 
+
+  def get_portal_positions(self, map_device_pos, radius = 20):
+    start_angle = 210
+    num_points = 6
+    portal_pos = []
+    for i in range(num_points):
+        angle_rad = radians(start_angle - i * 60)
+        x = round(map_device_pos[0] + radius * cos(angle_rad))
+        y = round(map_device_pos[1] + radius * sin(angle_rad))
+        portal_pos.append([x, y])
+    return portal_pos
+
+  def get_map_device(self):
+    es = self.poe_bot.game_data.entities.all_entities
+
+    for e in es:
+        if e.type == "IngameIcon":
+            if e.render_name == "Map Device":
+                return e
+    return None
+
+  def get_map_device_pos(self):
+    map = self.get_map_device()
+    if map is None:
+        return None
+    return [map.grid_position.x, map.grid_position.y]
+
   def doPreparations(self):
     """
     basically just
@@ -210,10 +237,11 @@ class Mapper2(PoeBotComponent):
         break
       # if has better map in stash
       waystones_can_use = self.getWaystonesCanUse()
+      print(f"wayston can use {waystones_can_use} size = {len(waystones_can_use)}")
       need_to_manage_stash_waystone_reason = None
       if len(waystones_can_use) == 0:
         need_to_manage_stash_waystone_reason = "no waystones in inventory"
-      if waystones_can_use[0].source == "stash":
+      elif waystones_can_use[0].source == "stash":
         need_to_manage_stash_waystone_reason = "best waystone is in stash"
       if need_to_manage_stash_waystone_reason is not None:
         print(f"[Mapper.doPreparations] need_to_manage_stash because {need_to_manage_stash_waystone_reason}")
@@ -429,7 +457,46 @@ class Mapper2(PoeBotComponent):
     poe_bot.ui.map_device.update()
     poe_bot.ui.map_device.checkIfActivateButtonIsActive()
     poe_bot.ui.map_device.activate()
-    poe_bot.helper_functions.waitForNewPortals()
+    result = poe_bot.helper_functions.waitForNewPortals(wait_for_seconds=10)
+    print(f"----sesult: {result}")
+    if not result:
+      for _ in range(1):
+        map_device = self.get_map_device()
+        print(f"----map: {map_device is not None}")
+        if map_device is not None:
+          try:
+            map_device_pos = self.get_map_device_pos()
+            if map_device_pos is None:
+              print("map device not found")
+              break
+            print(f"---map device pos {map_device_pos}")
+            portal_pos = self.get_portal_positions(map_device_pos)
+            for p in portal_pos:
+              print(f"----portal pos {p}")
+              poe_bot.mover.goToPoint(p, release_mouse_on_end=True, min_distance=5)
+              for i in self.get_portal_positions(p, radius=5):
+                path = poe_bot.pather.generatePath(
+                  (int(poe_bot.game_data.player.grid_pos.y), int(poe_bot.game_data.player.grid_pos.x)),
+                  (i[0], i[1]),
+                  )
+                point = path[int(len(path) / 2)]
+                pos_to_click = poe_bot.getPositionOfThePointOnTheScreen(point[0], point[1])
+                print(f"middle point {point} screen pos {pos_to_click}")
+                pos_x, pos_y = poe_bot.convertPosXY(int(pos_to_click[0]), int(pos_to_click[1]))
+                poe_bot.bot_controls.mouse.setPosSmooth(pos_x, pos_y)
+                time.sleep(random.uniform(0.05, 0.15))
+                poe_bot.bot_controls.mouse.click()
+                time.sleep(random.uniform(0.15, 0.2))
+              time.sleep(random.uniform(0.5, 1))
+              entered_map = True
+          except Exception as e:
+              entered_map = True
+              if f"{e.args[0]}" == "Area changed but refreshInstanceData was called before refreshAll":
+                self.cache.stage = 3
+                self.cache.save
+                raise(404)
+              print(f"----error: {e}")
+          break
 
     self.cache.stage = 2
     self.cache.save()
@@ -630,6 +697,7 @@ class Mapper2(PoeBotComponent):
     poe_bot = self.poe_bot
     in_instance = "Hideout" not in poe_bot.game_data.area_raw_name  # and not "_town_" in poe_bot.game_data.area_raw_name
     print(f"[Mapper2.run] current instance: {poe_bot.game_data.area_raw_name} in_instance {in_instance}")
+    print(f"[Mapper2.run] cached gamestage {self.cache.stage}")
     if self.cache.stage == 0:
       # self.checkIfSessionEnded()
       self.doPreparations()
@@ -660,28 +728,18 @@ class Mapper2(PoeBotComponent):
         self.manageStashAndInventory()
 
         original_area_raw_name = poe_bot.game_data.area_raw_name
-        portals = poe_bot.game_data.entities.town_portals
-        if len(portals) == 0:
-          self.cache.reset()
-          raise Exception("[Mapper2.run] no portals left to enter")
-        poe_bot.mover.goToEntitysPoint(portals[0], min_distance=30, release_mouse_on_end=True)
-        while poe_bot.game_data.invites_panel_visible is False:
-          portals[0].click(update_screen_pos=True)
-          time.sleep(random.uniform(0.3, 0.7))
-          try:
-            poe_bot.refreshInstanceData()
-          except Exception as e:
-            if e.__str__() in ["area is loading on partial request", "Area changed but refreshInstanceData was called before refreshAll"]:
-              break
         area_changed = False
+        self.cache.stage=3
+        self.cache.save
         while area_changed is not True:
           poe_bot.refreshAll()
           area_changed = poe_bot.game_data.area_raw_name != original_area_raw_name
-
-    # TODO move to if self.cache.stage == 2
-    self.current_map = getMapArea(poe_bot.game_data.area_raw_name)(poe_bot=poe_bot, mapper=self)
-    self.current_map.complete()
-    self.onMapFinishedFunction()
+          time.sleep(1)
+        raise(404)
+    if self.cache.stage == 3: 
+      self.current_map = getMapArea(poe_bot.game_data.area_raw_name)(poe_bot=poe_bot, mapper=self)
+      self.current_map.complete()
+      self.onMapFinishedFunction()
 
   def exploreRoutine(self, *args, **kwargs):
     poe_bot = self.poe_bot
@@ -1332,6 +1390,7 @@ mapper_settings.do_rituals = True
 mapper_settings.high_priority_maps = ["Bluff"]
 mapper_settings.complete_tower_maps = False
 mapper_settings.min_map_tier = 4
+mapper_settings.max_map_tier = 10
 mapper_settings.anoint_maps = False
 
 mapper = Mapper2(poe_bot=poe_bot, settings=mapper_settings)
@@ -1346,7 +1405,7 @@ for tier in range(15, 17):
   ARTS_TO_PICK.append(f"Art/2DItems/Currency/Ruthless/CoinPileTier{tier}.dds")
 # waystones
 #for tier in range(mapper.settings.min_map_tier,mapper.settings.max_map_tier):
-for tier in range(10,17):
+for tier in range(5,17):
   ARTS_TO_PICK.append(f"Art/2DItems/Maps/EndgameMaps/EndgameMap{tier}.dds")
 
 

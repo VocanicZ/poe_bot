@@ -25,6 +25,7 @@ class Build(Build):
     if attack_button is None:
       poe_bot.raiseLongSleepException("set to wasd, press it on qwert")
     self.attacking_skill = Skill(poe_bot=poe_bot, skill_index=self.poe_bot.game_data.skills.internal_names.index("player_melee_bow"))
+    self.auto_flasks = AutoFlasks(poe_bot=poe_bot)
 
   """
   def usualRoutine(self, mover: Mover):
@@ -141,8 +142,10 @@ class Build(Build):
       if entity_to_kill.isInRoi() is False or entity_to_kill.isInLineOfSight() is False:
         print("[build.killUsual] getting closer in killUsual ")
         break
+      self.attacking_skill.press()
       entity_to_kill.hover()
-      self.tempest_flurry_button_holder.holdFor(0.33)
+      time.sleep(0.1)
+      self.attacking_skill.release()
       if time.time() > start_time + max_kill_time_sec:
         print("[build.killUsual] exceed time")
         break

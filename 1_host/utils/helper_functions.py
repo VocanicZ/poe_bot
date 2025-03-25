@@ -400,6 +400,8 @@ class HelperFunctions:
         break
       else:
         time.sleep(0.2)
+    if not changed:
+      print("time out")
     if changed is True and sleep_time > 0:
       time.sleep(random.randint(int(sleep_time * 100 * 0.8), int(sleep_time * 100 * 1.2)) / 100)
     return changed
