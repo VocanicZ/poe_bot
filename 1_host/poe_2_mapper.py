@@ -469,7 +469,7 @@ class Mapper2(PoeBotComponent):
             if map_device_pos is None:
               print("map device not found")
               break
-            print(f"---map device pos {map_device_pos}")
+            print(f"----map device pos {map_device_pos}")
             portal_pos = self.get_portal_positions(map_device_pos)
             for p in portal_pos:
               print(f"----portal pos {p}")
@@ -492,8 +492,10 @@ class Mapper2(PoeBotComponent):
           except Exception as e:
               entered_map = True
               if f"{e.args[0]}" == "Area changed but refreshInstanceData was called before refreshAll":
+                print("----caching stage 3 ")
                 self.cache.stage = 3
-                self.cache.save
+                self.cache.save()
+                print("----saved")
                 raise(404)
               print(f"----error: {e}")
           break
@@ -730,7 +732,7 @@ class Mapper2(PoeBotComponent):
         original_area_raw_name = poe_bot.game_data.area_raw_name
         area_changed = False
         self.cache.stage=3
-        self.cache.save
+        self.cache.save()
         while area_changed is not True:
           poe_bot.refreshAll()
           area_changed = poe_bot.game_data.area_raw_name != original_area_raw_name
