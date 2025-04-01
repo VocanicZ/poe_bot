@@ -3,7 +3,7 @@ from ..build import *
 import sys
 sys.path.append("...")
 from utils.utils import getAngle
-from utils.skill import SkillWithDelay, MovementSkill, NON_INSTANT_MOVEMENT_SKILLS
+from utils.skill import SkillWithDelay, MovementSkill, NON_INSTANT_MOVEMENT_SKILLS, SKILL_KEYS_WASD
 
 GENERIC_BUILD_ATTACKING_SKILLS = [
   "spark",
@@ -267,8 +267,75 @@ class GenericHitAndRun(Build):
   some spam skills
   # attacks several times and runs away
   """
+  def __init__(self, poe_bot: "PoeBot"):
+    super().__init__(poe_bot)
+    main_skill_name = "player_melee_bow" # adjust it
+    self.attack_travel_distance = 200  # adjust it
+    self.attack_for = "" # adjust it x for count 
+    self.run_for_second = "" 
+    self.minimum_attack_distance = 0 # 0 for no minimum attack distance
+    # only one on keyboard
+    attack_button = None
+    print(f"looking for {main_skill_name} button on keyboard")
+    for i in range(3, 8):
+      print(self.poe_bot.game_data.skills.internal_names[i])
+      if self.poe_bot.game_data.skills.internal_names[i] == main_skill_name:
+        attack_button = SKILL_KEYS_WASD[i]
+        print(f"{main_skill_name} button is {attack_button}")
+        break
+    if attack_button is None:
+      poe_bot.raiseLongSleepException("skill not found if it set as mouse button set to qwert instead")
+    self.attacking_skill = Skill(poe_bot=poe_bot, skill_index=self.poe_bot.game_data.skills.internal_names.index("player_melee_bow"))
+    self.auto_flasks = AutoFlasks(poe_bot=poe_bot)
 
-  pass
+  def usualRoutine(self, mover: Mover = None):
+    poe_bot = self.poe_bot
+    if ("Hideout" in poe_bot.game_data.area_raw_name):
+      return False
+    self.auto_flasks.useFlasks()
+    # if we are moving
+    if mover is not None:
+      self.useBuffs()
+      min_hold_duration = random.randint(25, 55) / 100
+
+      nearby_enemies = list(filter(lambda e: e.isInRoi() and e.distance_to_player < 300, poe_bot.game_data.entities.attackable_entities))
+      #print(f"nearby_enemies: {nearby_enemies}")
+
+      entities_to_hold_skill_on: list[Entity] = []
+      if nearby_enemies:
+        for _ in range(1):
+          nearby_visible_enemies = list(filter(lambda e: e.isInLineOfSight(), nearby_enemies))
+          if not nearby_visible_enemies:
+            break
+          entities_to_hold_skill_on = sorted(nearby_visible_enemies, key=lambda e: e.distance_to_player)
+          min_hold_duration = 0.1
+          break
+      if entities_to_hold_skill_on:
+        entities_to_hold_skill_on_ids = list(map(lambda e: e.id, entities_to_hold_skill_on))
+        hold_start_time = time.time()
+        self.attacking_skill.press()
+        entities_to_hold_skill_on[0].hover()
+        print(f"self.attacking_skill.getCastTime() {self.attacking_skill.getCastTime()}")
+        hold_duration = self.attacking_skill.getCastTime() * random.randint(25, 35) / 10
+        # hold_duration = random.randint(int(self.attacking_skill.getCastTime() * 120), int(self.attacking_skill.getCastTime() * 160))/100
+        print(f"hold_duration {hold_duration}")
+        while time.time() - hold_duration < hold_start_time:
+          poe_bot.refreshInstanceData()
+          self.auto_flasks.useFlasks()
+          entity_to_kill = next((e for e in poe_bot.game_data.entities.attackable_entities if e.id in entities_to_hold_skill_on_ids), None)
+          if entity_to_kill:
+            entity_to_kill.hover()
+          else:
+            if not time.time() + 0.1 > hold_start_time + min_hold_duration:
+              time.sleep(0.1)
+            break
+        self.attacking_skill.release()
+        return True
+    # if we are staying and waiting for smth
+    else:
+      self.staticDefence()
+    return False
+
 
 class GenericKiteAround(Build):
   """
